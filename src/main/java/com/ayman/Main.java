@@ -1,49 +1,50 @@
-class Node
-{
-    public int val;
-    public List<Node> children;
-    public Node() {}
-    public Node(int _val) {val = _val;}
-    public Node(int _val, List<Node> _children) {val = _val;children = _children;}
-}
 void main()
 {
-    System.out.println(preorderRecursion(
-            new Node(1, Arrays.asList(new Node(3, Arrays.asList(new Node(5), new Node(6)))
-                    , new Node(2), new Node(4)))));
-    System.out.println(preorder(
-            new Node(1, Arrays.asList(new Node(3, Arrays.asList(new Node(5), new Node(6)))
-                    , new Node(2), new Node(4)))));
-}
-// with Recursion
-List<Integer> preorderRecursion(Node root)
-{
-    List<Integer> result = new ArrayList<>();
-    traverse(root, result);
-    return result;
-}
-void traverse(Node node, List<Integer> result)
-{
-    if (node == null) return;
-    result.add(node.val);
-    if (node.children != null)
-        for (Node child : node.children) traverse(child, result);
-}
+    for (int i : nextGreaterElement(new int[]{4, 1, 2}, new int[]{1, 3, 4, 2}))
+        System.out.print(i+" ");
+    for (int i : nextGreaterElementV2(new int[]{4, 1, 2}, new int[]{1, 3, 4, 2}))
+        System.out.print(i+" ");
 
-// wit Deque (Faster than Stack)
-List<Integer> preorder(Node root)
+}
+public int[] nextGreaterElement(int[] nums1, int[] nums2)
 {
-    List<Integer> result = new ArrayList<>();
-    if (root == null) return result;
-    Deque<Node> stack = new ArrayDeque<>();
-
-    stack.push(root);
-    while (!stack.isEmpty())
+    int size = nums1.length;
+    int [] ans = new int[size];
+    for (int i = 0; i < size; i++)
     {
-        Node node = stack.pop();
-        result.add(node.val);
-        if(node.children == null) continue;
-        for (int i = node.children.size() - 1; i >= 0; i--) stack.push(node.children.get(i));
+        int idx=-1;
+        for (int j = 0; j < nums2.length; j++)
+        {
+            if (nums2[j]==nums1[i])
+            {
+                idx=j;
+                break;
+            }
+        }
+        ans[i]=-1;
+        for (int j = idx+1; j < nums2.length; j++)
+        {
+            if (nums2[j]>nums1[i])
+            {
+                ans[i]=nums2[j];
+                break;
+            }
+        }
     }
-    return result;
+    return ans;
+}
+
+public int[] nextGreaterElementV2(int[] nums1, int[] nums2)
+{
+    Map<Integer, Integer> nextGreater = new HashMap<>();
+    Deque<Integer> stack = new ArrayDeque<>();
+    for (Integer num : nums2)
+    {
+        while (!stack.isEmpty() && stack.peek() < num) nextGreater.put(stack.poll() , num);
+        stack.push(num);
+    }
+    for (int i = 0; i < nums1.length; i++)
+        nums1[i]= nextGreater.getOrDefault(nums1[i],-1);
+
+    return nums1;
 }
