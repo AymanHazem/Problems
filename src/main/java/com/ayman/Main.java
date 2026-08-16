@@ -1,11 +1,18 @@
 void main()
 {
-    System.out.println(findTheDifferenceV1("a","aa"));
+    System.out.println(containsDuplicate(new int[]{1,1,1,3,3,4,3,2,4,2}));
 }
-public char findTheDifferenceV1(String s, String t)
+public boolean containsDuplicate(int[] nums)
 {
-    char c = 0;
-    for(char cs : s.toCharArray()) c ^= cs;
-    for(char ct : t.toCharArray()) c ^= ct;
-    return c;
+    boolean result = false;
+    Arrays.sort(nums);
+    for(int i=0;i<nums.length-1;i++)
+    {
+        if (nums[i]==nums[i+1])
+        {
+            result = true;
+            break;
+        }
+    }
+    return result;
 }
